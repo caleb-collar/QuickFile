@@ -36,18 +36,7 @@ class Server {
                 timestamp = new Timestamp(System.currentTimeMillis());
                 myThreads.add(ct);                
                 System.out.println("Success. "+timestamp);                              
-                if(myThreads.size() > 1){
-                    for (Thread thread : myThreads) {
-                        try {              
-                            thread.join();  
-                            if(!thread.isAlive()){
-                                myThreads.remove(thread);
-                            }                       
-                        } catch (InterruptedException ex) {              
-                            System.out.println("Join interrupted...");
-                        }
-                    }
-                }
+                
             }         
         } catch (IOException e) {
             System.out.println("IO exception...");

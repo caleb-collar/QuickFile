@@ -22,17 +22,19 @@ public class Client {
     private final String defaultDirectory = ".\\";
     private final Integer PORT = 54321;
     
-    public void FormConnections(String HOST) {       
-        try {
-            InputStreamReader isr = new InputStreamReader(System.in);
-            br = new BufferedReader(isr);
-            client = new Socket(HOST, PORT);
-            dis = new DataInputStream(client.getInputStream());
-            dos = new DataOutputStream(client.getOutputStream());
-            connected = true;
-        } catch (Exception e) {
-            System.out.println("Unable to connect to server @"+HOST+":"+PORT);
-        }   
+    public void FormConnections(String HOST) { 
+        if (!connected) {      
+            try {
+                InputStreamReader isr = new InputStreamReader(System.in);
+                br = new BufferedReader(isr);
+                client = new Socket(HOST, PORT);
+                dis = new DataInputStream(client.getInputStream());
+                dos = new DataOutputStream(client.getOutputStream());
+                connected = true;
+            } catch (Exception e) {
+                System.out.println("Unable to connect to server @"+HOST+":"+PORT);
+            }  
+        } 
     }
     
     public void setStrategy(String strategy){
@@ -82,6 +84,18 @@ public class Client {
                 fos.write(filedata.getBytes());
                 fos.close();
             }
+        } catch (Exception e) {
+            
+        }
+    }
+
+    public void TerminateConnections(){
+        try {
+            dos.flush();
+            dos.close();
+            dis.close();
+            client.close();
+            connected = false;
         } catch (Exception e) {
             
         }

@@ -106,7 +106,7 @@ class ClientThread extends Thread {
             } catch (Exception e) {
                exit = true;
             }
-        }      
+        }
     }
     
     private String HandleFilePath(String filename) {

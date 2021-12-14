@@ -3,6 +3,9 @@
 import com.formdev.flatlaf.FlatLaf;
 import java.io.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.applet.*;
 import com.formdev.flatlaf.IntelliJTheme; //Swing theme.
 import java.awt.Color;
 import java.awt.datatransfer.DataFlavor;
@@ -43,14 +46,17 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    private void menuInfoActionPerformed(java.awt.event.ActionEvent evt) {
-        JOptionPane jop = new JOptionPane();        
+    private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {  
+        FlatLaf.updateUI();
+    }
+
+    private void menuInfoActionPerformed(java.awt.event.ActionEvent evt) {       
         String versionText = "QuickFile Client GUI v1.1";
         String infoText = "-Drag and drop files to copy to server's remote or local location.\n"
                 +"-Use 'handling' menu to alter the way copied files are handled after transfer.\n"
                 +"-Use 'view' menu to switch the theme of the application.\n"
                 +"\nCreated by Caleb A. Collar for OOP.\n";       
-        jop.showMessageDialog(this, infoText, versionText, JOptionPane.INFORMATION_MESSAGE); 
+        JOptionPane.showMessageDialog(this, infoText, versionText, JOptionPane.INFORMATION_MESSAGE); 
     }
 
     private void viewNightOwlActionPerformed(java.awt.event.ActionEvent evt) {
@@ -160,8 +166,8 @@ public class GUI extends javax.swing.JFrame {
             public synchronized void drop(DropTargetDropEvent evt) {
                 try {
                     evt.acceptDrop(DnDConstants.ACTION_COPY);
-                    List<File> droppedFiles = (List<File>)
-                        evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    List<File> droppedFiles = (List<File>)evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    evt.dropComplete(true);
                     for (File file : droppedFiles) { 
                         //Handle dropped file.
                         System.out.println("File dropped. Initiate transfer...");
@@ -172,6 +178,7 @@ public class GUI extends javax.swing.JFrame {
                             thisClient.setStrategy(usingStrategy);
                         }
                         thisClient.SendFile(file.getCanonicalPath());
+                        thisClient.TerminateConnections();
                         System.out.println("System ready...");
                     }
                 } catch (Exception ex) {
@@ -189,6 +196,7 @@ public class GUI extends javax.swing.JFrame {
     javax.swing.ButtonGroup groupHandling;
     javax.swing.ButtonGroup groupView;
     javax.swing.JMenuItem menuExit;
+    javax.swing.JMenuItem menuRefresh;
     javax.swing.JMenu menuFile;
     javax.swing.JPopupMenu.Separator menuFileSeperator1;
     javax.swing.JMenu menuHandling;
@@ -215,6 +223,7 @@ public class GUI extends javax.swing.JFrame {
         menuInfo = new javax.swing.JMenuItem();
         menuFileSeperator1 = new javax.swing.JPopupMenu.Separator();
         menuExit = new javax.swing.JMenuItem();
+        menuRefresh = new javax.swing.JMenuItem();
         menuHandling = new javax.swing.JMenu();
         strategyAll = new javax.swing.JRadioButtonMenuItem();
         strategyUnZip = new javax.swing.JRadioButtonMenuItem();
@@ -258,6 +267,14 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         menuFile.add(menuInfo);
+
+        menuRefresh.setText("Refresh");
+        menuRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRefreshActionPerformed(evt);
+            }
+        });
+        //menuFile.add(menuRefresh);
         menuFile.add(menuFileSeperator1);
 
         menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
