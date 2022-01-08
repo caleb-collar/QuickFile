@@ -23,6 +23,10 @@
 - **Clean up:**
 - ```rm -r src\*.class```
 
+-or-
+
+Download the windows release from the [releases](https://github.com/Mindstormer-0/QuickFile/releases) page.
+
 ### Usage
 
 Drag and drop files into the GUI to send them over LAN directly to the root of the server.
@@ -36,7 +40,7 @@ a recursive extraction of `.zip` files.
 
 You may change the default download location from the root of the executable to another directory of a given client from the `file` dropdown and choosing *Download Location*.
 
-Use the `.ignoreExtensions` file like a `.gitignore` with the Filter strategy.
+Use the `.ignoreExtensions` file like a `.gitignore` with the Filter strategy. An example .ignoreExtensions is available.
 
 The `view` menu contains multiple themes to fit your workspace.
 
