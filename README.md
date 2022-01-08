@@ -44,4 +44,4 @@ By default, the system binds to port 54321.
 
 ### Java
 
-![Get Java]https://www.oracle.com/java/technologies/downloads/#jdk17-windows
+https://www.oracle.com/java/technologies/downloads/#jdk17-windows
