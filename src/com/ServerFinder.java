@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile server finder.
 //Imports
 import java.net.*;
@@ -18,24 +20,37 @@ public class ServerFinder
     private static List<String> hostList = new ArrayList<>();
     private static Boolean connected = false;
     
-    public String GetHostAddress(){
-        checkSubdomains();
-        return hostList.get(0);
+    public List<String> GetHostAddress(){
+        try {
+            Socket clientSocket = new Socket();
+            clientSocket.connect(new InetSocketAddress("127.0.0.1", PORT), TIMEOUT);
+            if (clientSocket.isBound()){
+                updateHost("127.0.0.1");              
+                clientSocket.close();
+            }                   
+        } catch (IOException ex) {
+            //System.out.println(targetAddr+":"+PORT+" refused.");                                               
+        }
+        checkSubdomains(hostList);   
+        return hostList;    
     }
     
     private static void updateHost(String ip){
         hostList.add(ip);
     }
     
-    private static void checkSubdomains(){
+    public static List<String> checkSubdomains(List<String> hostList){
         int threads = Runtime.getRuntime().availableProcessors()/2;
         List<Thread> myThreads = new ArrayList<>();
         for(int i=0; i<threads; i++){
             Thread t = new Thread("" + i){
                 @Override
                 public void run(){
-                    String TID = getName();                   
-                    while (!connected) {
+                    connected = false;
+                    int searchCounter = 0;
+                    String TID = getName();                                
+                    
+                    while (!connected && searchCounter <= 3) {
                         //System.out.println("Thread: " + TID + " searching for connection...");
                         System.out.println("Searching...");
                         Integer range;
@@ -55,11 +70,11 @@ public class ServerFinder
                             //
                         }
                         if (interfaces != null){
-                            while(interfaces.hasMoreElements() && !connected)
+                            while(interfaces.hasMoreElements() && !connected && searchCounter <= 3)
                             {
                                 NetworkInterface n = (NetworkInterface) interfaces.nextElement();
                                 Enumeration ee = n.getInetAddresses();
-                                while (ee.hasMoreElements() && !connected)
+                                while (ee.hasMoreElements() && !connected && searchCounter <= 3)
                                 {
                                     InetAddress netAddress = (InetAddress) ee.nextElement();
                                     address = netAddress.getHostAddress();                       
@@ -72,28 +87,32 @@ public class ServerFinder
                                     }
                                     if (validIP == 3) {
                                         for (int i =min; i<=max; i++){
-
                                             String targetAddr = address.substring(0, subnet);
                                             targetAddr = targetAddr + Integer.toString(i);
-                                            //System.out.println("Testing: "+targetAddr);
-                                            
-                                            try {
-                                                Socket clientSocket = new Socket();
-                                                clientSocket.connect(new InetSocketAddress(targetAddr, PORT), TIMEOUT);
-                                                updateHost(targetAddr);
-                                                connected = true;
-                                            } catch (IOException ex) {
-                                                //System.out.println(targetAddr+":"+PORT+" refused.");                                               
-                                            }                                                                                  
+                                            //System.out.println("Testing: "+targetAddr);                                           
+                                            if(!targetAddr.contains("127.") && !hostList.contains(targetAddr)){
+                                                    try {
+                                                    Socket clientSocket = new Socket();
+                                                    clientSocket.connect(new InetSocketAddress(targetAddr, PORT), TIMEOUT);
+                                                    if (clientSocket.isBound()){
+                                                        updateHost(targetAddr);
+                                                        connected = true;
+                                                        clientSocket.close();
+                                                    }                     
+                                                } catch (IOException ex) {
+                                                    //System.out.println(targetAddr+":"+PORT+" refused.");                                               
+                                                } 
+                                            }                                                                                                                                                                 
                                         }
                                     }
                                 }
                             }
-                        } 
+                        }
+                        searchCounter++;
                     }
                 }
             };
-            myThreads.add(t);
+            myThreads.add(t);           
         }
         //System.out.println(myThreads.size()+" threads.");
         for (Thread thread : myThreads) {
@@ -109,5 +128,6 @@ public class ServerFinder
         }
         
         System.out.println("Done...");
+        return hostList;
     }
 }

@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile filtering strategy.
 //Imports
 import java.io.File;

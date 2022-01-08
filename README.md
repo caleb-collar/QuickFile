@@ -20,18 +20,28 @@
 - Run (client): ```java -cp "src:lib/*" Driver```
 - Run (server): ```java -cp "src:lib/*" Server```
 
+- **Clean up:**
+- ```rm -r src\*.class```
+
 ### Usage
 
 Drag and drop files into the GUI to send them over LAN directly to the root of the server.
 
-The client will automatically find a running server instance after launching the Driver as long
-as the client and server are on the same LAN.
+The client will **automatically** detect other running clients on startup as long as they are on the same network and port `54321` is available.
 
-There are multiple strategy patterns to choose from for handling file inputs including
+If an additional client is opened after the initial detection, there is a *Refresh Connections* option in the `file` dropdown.
+
+There are multiple strategy patterns to choose from for `Handling` file inputs including
 a recursive extraction of `.zip` files.
 
-Use the ```.ignoreExtensions``` file like a `.gitignore` with the Filter strategy.
+You may change the default download location from the root of the executable to another directory of a given client from the `file` dropdown and choosing *Download Location*.
+
+Use the `.ignoreExtensions` file like a `.gitignore` with the Filter strategy.
 
 The `view` menu contains multiple themes to fit your workspace.
 
 By default, the system binds to port 54321.
+
+### Java
+
+![Get Java]https://www.oracle.com/java/technologies/downloads/#jdk17-windows

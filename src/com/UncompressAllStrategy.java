@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile extraction strategy.
 //Imports
 import java.io.*;
@@ -17,7 +19,7 @@ public class UncompressAllStrategy implements FileHandlingStrategy {
         try {
             RecursiveExtraction(path);
         } catch (Exception ex) {
-            System.out.println("HANDLING STRATEGY: IO Error on archived file(s).");
+            System.out.println("HANDLING STRATEGY: IO Error on archived file(s) or no archive found.");
         }
     }
     

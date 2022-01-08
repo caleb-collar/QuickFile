@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile strategy interface.
 //Imports
 import java.io.IOException;

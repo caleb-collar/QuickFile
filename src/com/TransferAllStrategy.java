@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile default strategy.
 /**
  * This is the default strategy for the QuickFile simple FTP system.

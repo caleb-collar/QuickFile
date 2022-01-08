@@ -1,7 +1,11 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile Client
 //Imports
 import java.io.*;
 import java.net.*;
+import javax.swing.JProgressBar;
+import javax.swing.event.ChangeListener;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -9,7 +13,7 @@ import org.apache.commons.io.IOUtils;
  * @author Caleb
  * @version 1.0
  */
-public class Client {
+public class Client{
 
     public Socket client = null;
     public DataInputStream dis = null;
@@ -19,33 +23,57 @@ public class Client {
     public BufferedReader br = null;
     public String inputFromUser = "";
     public Boolean connected = false;
-    private final String defaultDirectory = ".\\";
+    private String writeDirectory = ".\\";
     private final Integer PORT = 54321;
     
-    public void FormConnections(String HOST) { 
-        if (!connected) {      
-            try {
-                InputStreamReader isr = new InputStreamReader(System.in);
-                br = new BufferedReader(isr);
-                client = new Socket(HOST, PORT);
-                dis = new DataInputStream(client.getInputStream());
-                dos = new DataOutputStream(client.getOutputStream());
-                connected = true;
-            } catch (Exception e) {
-                System.out.println("Unable to connect to server @"+HOST+":"+PORT);
-            }  
-        } 
+    public void FormConnections(String HOST) {       
+        try {
+            InputStreamReader isr = new InputStreamReader(System.in);
+            br = new BufferedReader(isr);
+            client = new Socket(HOST, PORT);
+            dis = new DataInputStream(client.getInputStream());
+            dos = new DataOutputStream(client.getOutputStream());
+            connected = true;
+        } catch (Exception e) {
+            System.out.println("Unable to connect to server @"+HOST+":"+PORT);
+        }   
     }
+    
+    /*
+    while (connected) {
+            try {              
+                SendFile(filename);
+                connected = false;                  
+            } catch (Exception e) {
+                System.out.println("Some error occured.");
+            }
+        }
+    */
     
     public void setStrategy(String strategy){
         try {     
             dos.writeUTF("STRATEGY_CHANGE");
             dos.writeUTF(strategy);   
-            System.out.println("Sent strategy change request...");        
+            //System.out.println("USING STRATEGY: "+strategy);        
         } catch (Exception e) {
 
         }
     } 
+    
+    public InetAddress getIP(){
+        return client.getInetAddress();
+    }
+    
+    public void setDownloadLocation(String directory){
+        writeDirectory = directory;
+         try {     
+            dos.writeUTF("DOWNLOAD_LOCATION");
+            dos.writeUTF(writeDirectory);   
+            //System.out.println("USING DIRECTORY: "+writeDirectory);        
+        } catch (Exception e) {
+
+        }
+    }
     
     public void SendFile(String filename) {      
         try {     
@@ -53,13 +81,12 @@ public class Client {
             file = new File(filename);
             if (file.isFile()) {
                 fis = new FileInputStream(file);
-                dos.writeUTF("FILE_SEND_FROM_CLIENT");
-                dos.writeUTF(filename);
+                dos.writeUTF("FILE_SEND_FROM_CLIENT");                
+                dos.writeUTF(filename);             
                 IOUtils.copy(fis, dos);
                 dos.flush();
                 fis.close();
-                dos.close();
-                //dos.writeUTF(filedata);
+                dos.close();              
                 System.out.println("File send successful.");
             } else {
                 System.out.println("404 File not found.");
@@ -80,7 +107,7 @@ public class Client {
             if (filedata.equals("")) {
                 System.out.println("No Such File");
             } else {
-                fos = new FileOutputStream(filename);
+                fos = new FileOutputStream(writeDirectory+filename);
                 fos.write(filedata.getBytes());
                 fos.close();
             }
@@ -89,22 +116,10 @@ public class Client {
         }
     }
 
-    public void TerminateConnections(){
-        try {
-            dos.flush();
-            dos.close();
-            dis.close();
-            client.close();
-            connected = false;
-        } catch (Exception e) {
-            
-        }
-    }
-
     private String HandleFilePath(String filename) {
         int index = filename.lastIndexOf('\\');
         String name = filename.substring(index+1);
-        String finalPath = defaultDirectory+name;
+        String finalPath = writeDirectory+name;
         return finalPath;
     }
 }

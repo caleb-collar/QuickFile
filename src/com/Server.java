@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile Server
 //Imports
 import java.io.*;
@@ -18,8 +20,17 @@ class Server {
     private final List<Thread> myThreads = new ArrayList<>();
     
     public static void main(String[] arg) {
-        Server s = new Server();
-        s.FormConnections();
+        new Server();  
+    }
+    
+    public static void launchServer(){
+        java.awt.EventQueue.invokeLater(() -> {
+            new Server();    
+        });
+    }
+    
+    public Server(){
+        FormConnections();
     }
 
     public void FormConnections() {
@@ -36,7 +47,18 @@ class Server {
                 timestamp = new Timestamp(System.currentTimeMillis());
                 myThreads.add(ct);                
                 System.out.println("Success. "+timestamp);                              
-                
+                if(myThreads.size() > 1){
+                    for (Thread thread : myThreads) {
+                        try {              
+                            thread.join();  
+                            if(!thread.isAlive()){
+                                myThreads.remove(thread);
+                            }                       
+                        } catch (InterruptedException ex) {              
+                            System.out.println("Join interrupted...");
+                        }
+                    }
+                }
             }         
         } catch (IOException e) {
             System.out.println("IO exception...");

@@ -1,3 +1,5 @@
+package com;
+
 //CSC 2910 OOP | Caleb Collar | FTP System | QuickFile client threads extension.
 //Imports
 import java.io.DataInputStream;
@@ -22,7 +24,7 @@ class ClientThread extends Thread {
     private FileInputStream fis = null;
     private FileOutputStream fos = null;
     private File file = null;
-    private String defaultDirectory = ".\\"; //Output of files.
+    //private String defaultDirectory = ".\\"; //Output of files.
     
     public ClientThread(Socket c) {
         try {
@@ -41,6 +43,7 @@ class ClientThread extends Thread {
         FileHandlingStrategy uncompressAll = new UncompressAllStrategy();
         FileHandlingStrategy filterSanitize = new FilterSanitizeStrategy();
         FileHandlingStrategy fileHandlingStrategy = transferAll; //Default
+        String downloadLocation = ""; //Default
         //Exit flag
         Boolean exit = false;
         while (!exit) {
@@ -70,9 +73,21 @@ class ClientThread extends Thread {
                         }
                         System.out.println("Done...\nReady.");
                         break;
+                    case "DOWNLOAD_LOCATION":
+                        downloadLocation = dis.readUTF()+"\\";
+                        switch (downloadLocation) {//Handle download location as string.
+                            case "":
+                                System.out.println("Unknown download location request from client. Using default.");                           
+                                break;              
+                            default:
+                                System.out.println("Client @"+client.getInetAddress().getHostAddress()+" requests directory change to "+downloadLocation);                           
+                                break;
+                        }
+                        System.out.println("Done...\nReady.");
+                        break;
                     case "FILE_SEND_FROM_CLIENT":
                         filename = dis.readUTF();
-                        String path = HandleFilePath(filename);
+                        String path = downloadLocation+HandleFilePath(filename);
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         System.out.println("Client @"+client.getInetAddress().getHostAddress()+" -> "+path+" "+timestamp);
                         fos = new FileOutputStream(path);
@@ -106,13 +121,13 @@ class ClientThread extends Thread {
             } catch (Exception e) {
                exit = true;
             }
-        }
+        }      
     }
     
     private String HandleFilePath(String filename) {
         int index = filename.lastIndexOf('\\');
         String name = filename.substring(index+1);
-        String finalPath = defaultDirectory+name;
+        String finalPath = name;
         return finalPath;
     }
 }
