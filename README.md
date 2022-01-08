@@ -8,7 +8,7 @@
 
 # FTP Server & Client With GUI
 
-![gui_example](https://github.com/Mindstormer-0/QuickFile/blob/main/screenshots/gui_example.png?raw=true)
+![gui_example](https://github.com/Mindstormer-0/QuickFile/blob/main/screenshots/QuickFile-v1.0.1ex.png?raw=true)
 
 ![gui_example2](https://github.com/Mindstormer-0/QuickFile/blob/main/screenshots/gui_example2.png?raw=true)
 
