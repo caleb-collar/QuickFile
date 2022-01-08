@@ -13,6 +13,7 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import javax.imageio.ImageIO;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -406,7 +407,8 @@ public class GUI extends javax.swing.JFrame {
     //Sets the runtime icon.
     private void setIcon() {
         try{
-            ImageIcon guiLogo = new ImageIcon("src\\images\\logo.png");
+            InputStream iconStream = GUI.class.getResourceAsStream("/images/logo.png");
+            ImageIcon guiLogo = new ImageIcon(ImageIO.read(iconStream));
             setIconImage(guiLogo.getImage());
         } catch (Exception ex){
             System.err.println( "Runtime icon image not found." );
