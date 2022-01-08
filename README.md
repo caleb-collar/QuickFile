@@ -1,4 +1,12 @@
-# QuickFile FTP Server & Client With GUI
+```
+   ____        _      __   _______ __   
+  / __ \__  __(_)____/ /__/ ____(_) /__ 
+ / / / / / / / / ___/ //_/ /_  / / / _ \
+/ /_/ / /_/ / / /__/ ,< / __/ / / /  __/
+\___\_\__,_/_/\___/_/|_/_/   /_/_/\___/ 
+```
+
+# FTP Server & Client With GUI
 
 ![gui_example](https://github.com/Mindstormer-0/QuickFile/blob/main/screenshots/gui_example.png?raw=true)
 
