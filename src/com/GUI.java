@@ -38,6 +38,7 @@ public class GUI extends javax.swing.JFrame {
         initComponents(); //Creates GUI components.
         setSizeAndVisibility(); //Sets up initial GUI visibilty.
         setDropArea(); //Adds drag and drop.
+        //hostIPs = Driver.getAddressList();
         localHostList();
         System.out.println("System ready...");
     }
@@ -336,59 +337,18 @@ public class GUI extends javax.swing.JFrame {
   
     private void localHostList(){
         searchProgressBar.setVisible(true);    
-        Thread searchThread = new Thread(() -> {
-            System.out.println("Mapping on local adapters... ");
-            hostIPs = hostFinder.GetHostAddress();
-            System.out.println("Mapping WAN addresses... ");
-            while (hostCount < 1){
-                hostCount = 0;
-                hostIPs = ServerFinder.checkSubdomains(hostIPs);
-                    for (String HOST : hostIPs ){                  
-                    Client thisClient = new Client();
-                    thisClient.FormConnections(HOST);
-                    if(!checkIsLocal(thisClient)){
-                        hostCount++;
-                        numConnections.setText("Connections: "+hostCount);
-                        System.out.println("Connections: "+hostCount);
-                    }
-                }
-            }
-            searchProgressBar.setVisible(false);
-        });
-        searchThread.start();
+        while (hostIPs.size() < 1){
+            hostIPs = Driver.getAddressList();
+        }
+        hostCount = hostIPs.size();
+        searchProgressBar.setVisible(false);
     }
     
     private void refreshHostList(){
         searchProgressBar.setVisible(true);
-        Thread searchThread = new Thread(() -> {
-            if (hostCount >= 1){
-                hostCount = 0;
-                hostIPs = ServerFinder.checkSubdomains(hostIPs);
-                for (String HOST : hostIPs ){                 
-                    Client thisClient = new Client();
-                    thisClient.FormConnections(HOST);
-                    if(!checkIsLocal(thisClient)){
-                        hostCount++;
-                        numConnections.setText("Connections: "+hostCount);
-                        System.out.println("Connections: "+hostCount);
-                    }
-                }
-            } else while (hostCount < 1){
-                hostCount = 0;
-                hostIPs = ServerFinder.checkSubdomains(hostIPs);
-                    for (String HOST : hostIPs ){                  
-                    Client thisClient = new Client();
-                    thisClient.FormConnections(HOST);
-                    if(!checkIsLocal(thisClient)){
-                        hostCount++;
-                        numConnections.setText("Connections: "+hostCount);
-                        System.out.println("Connections: "+hostCount);
-                    }
-                }
-            }
-            searchProgressBar.setVisible(false);
-        });
-        searchThread.start();
+        hostIPs = Driver.getAddressList();
+        hostCount = hostIPs.size();
+        searchProgressBar.setVisible(false);
     }
     
     //Sets up the custom Swing theme from referenced json using flatlaf library.
